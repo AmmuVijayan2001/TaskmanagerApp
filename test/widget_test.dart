@@ -1,30 +1,22 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:taskmanager/main.dart';
+import 'package:taskmanager/features/tasks/domain/task.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  test('Task serializes API fields correctly', () {
+    final task = Task.fromJson({
+      'id': 7,
+      'title': 'Prepare release',
+      'is_completed': false,
+      'priority': 'High',
+      'category': 'Work',
+      'due_date': '2026-12-01T12:00:00',
+      'created_at': '2026-11-01T12:00:00',
+    });
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
-
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
-
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    expect(task.id, 7);
+    expect(task.priority, TaskPriority.high);
+    expect(task.category, TaskCategory.work);
+    expect(task.toRequestJson()['title'], 'Prepare release');
+    expect(task.toRequestJson().containsKey('id'), isFalse);
   });
 }

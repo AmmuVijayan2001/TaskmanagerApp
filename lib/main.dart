@@ -10,6 +10,8 @@ import 'app/app.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
+  await Hive.openBox<dynamic>('task_cache');
+  await Hive.openBox<dynamic>('task_pending_mutations');
 
   Object? initializationError;
   try {
@@ -20,7 +22,11 @@ Future<void> main() async {
 
   runApp(
     ProviderScope(
-      overrides: [firebaseInitializationErrorProvider.overrideWithValue(initializationError)],
+      overrides: [
+        firebaseInitializationErrorProvider.overrideWithValue(
+          initializationError,
+        ),
+      ],
       child: const SmartTaskManagerApp(),
     ),
   );
